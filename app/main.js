@@ -13,7 +13,7 @@ app.on("ready", () => {
 });
 
 exports.getFileFromUser = () => {
-  const files = dialog.showOpenDialog({
+  const files = dialog.showOpenDialog(mainWindow, {
     properties: ["openFile"],
     // buttonLabel: "Unveil",
     // title: "Open Fire Sale Document",
@@ -34,7 +34,7 @@ exports.getFileFromUser = () => {
 exports.saveMarkdown = (filePath, content) => {
   // filePath will be null
   if (!filePath) {
-    filePath = dialog.showSaveDialog({
+    filePath = dialog.showSaveDialog(mainWindow, {
       title: "Save Markdown",
       defaultPath: app.getPath("desktop"),
       filters: [{ name: "Markdown Files", extensions: ["md", "markdown"] }],
