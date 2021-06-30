@@ -34,6 +34,8 @@ exports.getFileFromUser = () => {
 const openFile = (filePath) => {
   const content = fs.readFileSync(filePath).toString();
 
-	// emit information to IPC (Interprocess communication)
+  app.addRecentDocument(filePath);
+
+  // emit information to IPC (Interprocess communication)
   mainWindow.webContents.send("file-opened", filePath, content);
 };
