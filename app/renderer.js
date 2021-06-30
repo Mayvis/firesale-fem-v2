@@ -30,6 +30,9 @@ const updateUserInterface = (isEdited) => {
     title += isEdited ? " (Edited)" : "";
   }
 
+  currentWindow.setRepresentedFilename(filePath);
+  currentWindow.setDocumentEdited(isEdited);
+
   saveMarkdownButton.disabled = !isEdited;
   revertButton.disabled = !isEdited;
 
