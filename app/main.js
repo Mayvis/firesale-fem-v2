@@ -31,6 +31,24 @@ exports.getFileFromUser = () => {
   openFile(file);
 };
 
+exports.saveMarkdown = (filePath, content) => {
+  // filePath will be null
+  if (!filePath) {
+    filePath = dialog.showSaveDialog({
+      title: "Save Markdown",
+      defaultPath: app.getPath("desktop"),
+      filters: [{ name: "Markdown Files", extensions: ["md", "markdown"] }],
+    });
+  }
+
+  // handle the situation, if user didn't click save, the file path will still be null
+  if (!filePath) return;
+
+  fs.writeFileSync(filePath, content);
+
+  openFile(filePath);
+};
+
 const openFile = (filePath) => {
   const content = fs.readFileSync(filePath).toString();
 
