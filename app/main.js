@@ -61,11 +61,11 @@ exports.saveHTML = (content) => {
   fs.writeFileSync(file, content);
 };
 
-const openFile = (filePath) => {
+const openFile = (exports.openFile = (filePath) => {
   const content = fs.readFileSync(filePath).toString();
 
   app.addRecentDocument(filePath);
 
   // emit information to IPC (Interprocess communication)
   mainWindow.webContents.send("file-opened", filePath, content);
-};
+});

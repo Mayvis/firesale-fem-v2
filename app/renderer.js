@@ -59,6 +59,51 @@ saveHtmlButton.addEventListener("click", () => {
   mainProcess.saveHTML(htmlView.innerHTML);
 });
 
+window.addEventListener("dragstart", (event) => {
+  event.preventDefault();
+});
+window.addEventListener("dragover", (event) => {
+  event.preventDefault();
+});
+window.addEventListener("dragleave", (event) => {
+  event.preventDefault();
+});
+window.addEventListener("drop", (event) => {
+  event.preventDefault();
+});
+
+const getDraggedFile = (event) => event.dataTransfer.items[0];
+const getDroppedFile = (event) => event.dataTransfer.files[0];
+const fileTypeIsSupported = (file) => {
+  return ["text/plain", "text/markdown"].includes(file.type);
+};
+
+markdownView.addEventListener("dragover", (event) => {
+  const file = getDraggedFile(event);
+
+  if (fileTypeIsSupported(file)) {
+    markdownView.classList.add("drag-over");
+  } else {
+    markdownView.classList.add("drag-error");
+  }
+});
+markdownView.addEventListener("dragleave", () => {
+  markdownView.classList.remove("drag-over");
+  markdownView.classList.remove("drag-error");
+});
+markdownView.addEventListener("drop", (event) => {
+  markdownView.classList.remove("drag-over");
+  markdownView.classList.remove("drag-error");
+
+  const file = getDroppedFile(event);
+
+  if (fileTypeIsSupported(file)) {
+    mainProcess.openFile(file.path);
+  } else {
+    alert("That file type is not supported");
+  }
+});
+
 ipcRenderer.on("file-opened", (event, file, content) => {
   filePath = file;
   originalContent = content;
