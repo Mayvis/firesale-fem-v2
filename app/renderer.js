@@ -1,6 +1,6 @@
 const marked = require("marked");
 const path = require("path");
-const { remote, ipcRenderer } = require("electron");
+const { remote, ipcRenderer, shell } = require("electron");
 const mainProcess = remote.require("./main");
 const currentWindow = remote.getCurrentWindow();
 
@@ -33,6 +33,9 @@ const updateUserInterface = (isEdited) => {
     currentWindow.setDocumentEdited(isEdited);
   }
 
+  showFileButton.disabled = !filePath;
+  openInDefaultButton.disabled = !filePath;
+
   saveMarkdownButton.disabled = !isEdited;
   revertButton.disabled = !isEdited;
 
@@ -57,6 +60,18 @@ saveMarkdownButton.addEventListener("click", () => {
 
 saveHtmlButton.addEventListener("click", () => {
   mainProcess.saveHTML(htmlView.innerHTML);
+});
+
+showFileButton.addEventListener("click", () => {
+  if (!filePath) return alert("Nope");
+
+  shell.showItemInFolder(filePath);
+});
+
+openInDefaultButton.addEventListener("click", () => {
+  if (!filePath) return alert("Nope");
+
+  shell.openItem(filePath);
 });
 
 window.addEventListener("dragstart", (event) => {
