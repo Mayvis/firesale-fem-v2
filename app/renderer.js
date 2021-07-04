@@ -42,6 +42,8 @@ const updateUserInterface = (isEdited) => {
   currentWindow.setTitle(title);
 };
 
+newFileButton.addEventListener("click", () => {});
+
 markdownView.addEventListener("keyup", (event) => {
   const currentContent = event.target.value;
 
@@ -54,19 +56,27 @@ openFileButton.addEventListener("click", () => {
   mainProcess.getFileFromUser();
 });
 
-saveMarkdownButton.addEventListener("click", () => {
+const saveMarkdown = () => {
   mainProcess.saveMarkdown(filePath, markdownView.value);
-});
+};
 
-saveHtmlButton.addEventListener("click", () => {
+saveMarkdownButton.addEventListener("click", () => saveMarkdown);
+
+ipcRenderer.on("save-markdown", saveMarkdown);
+
+const saveHTML = () => {
   mainProcess.saveHTML(htmlView.innerHTML);
-});
+};
+
+saveHtmlButton.addEventListener("click", () => saveHTML);
 
 showFileButton.addEventListener("click", () => {
   if (!filePath) return alert("Nope");
 
   shell.showItemInFolder(filePath);
 });
+
+ipcRenderer.on("save-html", saveHTML);
 
 openInDefaultButton.addEventListener("click", () => {
   if (!filePath) return alert("Nope");

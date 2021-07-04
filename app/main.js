@@ -1,10 +1,13 @@
-const { app, BrowserWindow, dialog } = require("electron");
+const { app, BrowserWindow, dialog, Menu } = require("electron");
 const fs = require("fs");
 
 let mainWindow = null;
 
 app.on("ready", () => {
   mainWindow = new BrowserWindow();
+
+  Menu.setApplicationMenu(applicationMenu);
+
   mainWindow.loadFile(`${__dirname}/index.html`);
 
   mainWindow.once("ready-to-show", () => {
@@ -69,3 +72,74 @@ const openFile = (exports.openFile = (filePath) => {
   // emit information to IPC (Interprocess communication)
   mainWindow.webContents.send("file-opened", filePath, content);
 });
+
+const template = [
+  {
+    label: "File",
+    submenu: [
+      {
+        label: "Open File",
+        accelerator: "CommandOrControl+O",
+        click() {
+          exports.getFileFromUser();
+        },
+      },
+      {
+        label: "Save File",
+        accelerator: "CommandOrControl+S",
+        click() {
+          mainWindow.webContents.send("save-markdown");
+        },
+      },
+      {
+        label: "Save HTML",
+        accelerator: "CommandOrControl+Shift+S",
+        click() {
+          mainWindow.webContents.send("save-html");
+        },
+      },
+    ],
+  },
+];
+
+// macOS
+if (process.platform === "darwin") {
+  const applicationName = "Fire Sale";
+
+  // put something on the begining
+  template.unshift({
+    label: applicationName,
+    submenu: [
+      {
+        label: `About ${applicationName}`,
+        role: "about",
+      },
+      {
+        label: `Quit ${applicationName}`,
+        role: "quit",
+      },
+      {
+        label: "Close",
+        role: "close",
+      },
+      {
+        label: "Copy",
+        role: "copy",
+      },
+      {
+        label: "Paste",
+        role: "paste",
+      },
+      {
+        label: "Undo",
+        role: "undo",
+      },
+      {
+        label: "Delete",
+        role: "delete",
+      },
+    ],
+  });
+}
+
+const applicationMenu = Menu.buildFromTemplate(template);
